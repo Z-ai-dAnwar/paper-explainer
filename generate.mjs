@@ -33,7 +33,7 @@ function wordTimings(script, duration) {
   });
 }
 
-console.log(`Loading Kokoro (${MODEL}) — first run downloads ~80MB...`);
+console.log(`Loading Kokoro (${MODEL}) - first run downloads ~80MB...`);
 const tts = await KokoroTTS.from_pretrained(MODEL, { dtype: "q8", device: "cpu" });
 console.log(`Model ready. Voice = ${VOICE}. Rendering ${scenes.length} scenes...`);
 
@@ -48,5 +48,10 @@ for (const s of scenes) {
   console.log(`${dur.toFixed(1)}s -> ${path}`);
 }
 
-fs.writeFileSync("timings.js", "window.TIMINGS = " + JSON.stringify(timings) + ";\n");
-console.log("Wrote timings.js. Done.");
+// Emit timings AND the raw scripts (the engine reads window.SCRIPTS for live in-browser voice re-synthesis).
+fs.writeFileSync(
+  "timings.js",
+  "window.TIMINGS = " + JSON.stringify(timings) + ";\n" +
+  "window.SCRIPTS = " + JSON.stringify(scenes.map((s) => s.script)) + ";\n"
+);
+console.log("Wrote timings.js (TIMINGS + SCRIPTS). Done.");
