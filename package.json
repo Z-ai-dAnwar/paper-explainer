@@ -1,0 +1,8 @@
+{
+  "name": "paper-explainer",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "kokoro-js": "^1.2.0"
+  }
+}
