@@ -6,6 +6,10 @@
 
 Turn any research paper or dense concept into a **local, self-narrating, video-style interactive explainer**: a web page you *watch* instead of read.
 
+[![paper-explainer: a narrated, animated explainer of the Patel 2024 paper, with a live word-by-word transcript](docs/preview.png)](https://z-ai-danwar.github.io/paper-explainer/)
+
+<p align="center"><em><a href="https://z-ai-danwar.github.io/paper-explainer/">▶ Watch this one live</a>: real voice, per-scene animation, word-synced transcript.</em></p>
+
 It plays a real open-source voice (Kokoro TTS, running locally, not the robotic browser voice) narrating the paper scene by scene, with a hand-drawn canvas animation per idea, a transcript that highlights each word as it's spoken, plus speed control, rewind, scrubbing, and fullscreen. The teaching follows the "AI Search" YouTube style: hook with the problem, build tension before the solution, carry the hard idea on one concrete analogy, and name the jargon last.
 
 Everything runs on your machine. Free, offline after the first model download, no API keys.
