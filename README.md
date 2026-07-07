@@ -6,7 +6,7 @@
 
 Turn any research paper or dense concept into a **local, self-narrating, video-style interactive explainer**: a web page you *watch* instead of read.
 
-[![paper-explainer: a narrated, animated explainer of the Patel 2024 paper, with a live word-by-word transcript](docs/preview.png)](https://z-ai-danwar.github.io/paper-explainer/)
+[![paper-explainer: a narrated, animated explainer of the Patel 2024 paper, with a live word-by-word transcript](docs/demo.png)](https://z-ai-danwar.github.io/paper-explainer/)
 
 <p align="center"><em><a href="https://z-ai-danwar.github.io/paper-explainer/">▶ Watch this one live</a>: real voice, per-scene animation, word-synced transcript.</em></p>
 
