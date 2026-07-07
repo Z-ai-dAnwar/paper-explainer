@@ -182,7 +182,20 @@
   .bar .sc{font-size:16px;width:46px;text-align:right;flex:none;font-weight:600}
 
   @media (prefers-reduced-motion:reduce){#bg .blob{animation:none!important}.sbody{scroll-behavior:auto}.veil .ring{animation:none}}
-  @media (max-width:640px){.brand .by{display:none} .dchip.speed .t{display:none}}
+  @media (max-width:700px){
+    .brand .by{display:none} .brand h1{font-size:15px}
+    .topbar{padding:2px 2px 8px; gap:7px}
+    .chip span{display:none} .chip{padding:0 11px}          /* icon-only chips on phones */
+    .dock{gap:5px; padding:8px 10px 12px}
+    .play{width:46px;height:46px} .play svg{width:20px;height:20px}
+    .skip{width:36px;height:36px} .skip svg{width:26px;height:26px}
+    .nav{width:30px;height:30px} .nav svg{width:17px;height:17px}
+    .tlrow .cap{display:none}                                /* hide scene title; keep the timecode */
+    .tlrow{font-size:10.5px} .rail{height:9px}
+    .dchip.speed{display:none}                               /* drop speed picker to fit; still on desktop */
+    .caption{font-size:16px; line-height:1.38; padding:20px 16px 16px}
+    .sheet{width:auto; left:4vw; right:4vw; bottom:84px; max-height:44vh}
+  }
 </style>
 </head>
 <body>
@@ -304,7 +317,11 @@
 
   /* ---- 16:9 sizing ---- */
   var frame=$('frame'), wrap=$('stagewrap');
-  function sizeStage(){var W=wrap.clientWidth,H=wrap.clientHeight,ar=16/9;var w=W,h=W/ar;if(h>H){h=H;w=H*ar;}
+  function sizeStage(){var W=wrap.clientWidth,H=wrap.clientHeight,ar=16/9;
+    // Narrow/portrait (phones): don't force 16:9 into a thin strip - fill the area (capped so it isn't absurdly tall).
+    // Scenes draw with relative coords, so the same animation just re-lays-out; no separate mobile build needed.
+    if(W<700){var h=Math.min(H,W*1.5);frame.style.width=W+'px';frame.style.height=Math.floor(h)+'px';return;}
+    var w=W,h=W/ar;if(h>H){h=H;w=H*ar;}
     frame.style.width=Math.floor(w)+'px';frame.style.height=Math.floor(h)+'px';}
 
   var au=$('au'), idx=0, playing=false, rate=1.0, rates=[0.75,1.0,1.25,1.5,2.0];
