@@ -98,18 +98,13 @@
   .eyebrow .dot{width:5px;height:5px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent)}
   .eyebrow .num{color:var(--faint); font-family:var(--sans); font-size:11px; letter-spacing:.08em}
 
-  .caption{position:absolute; left:0; right:0; bottom:0; z-index:6;
-    padding:calc(30px*var(--cap-scale,1)) clamp(20px,4vw,58px) calc(26px*var(--cap-scale,1));
+  .caption{position:absolute; left:0; right:0; bottom:0; z-index:6; padding:30px clamp(20px,4vw,58px) 26px;
     background:linear-gradient(0deg, rgba(4,7,11,.95) 30%, rgba(4,7,11,0));
-    font-family:var(--sans); font-size:calc(clamp(16px,2.25vw,23px)*var(--cap-scale,1)); line-height:1.44; font-weight:450;
-    letter-spacing:-.006em; text-wrap:balance; color:var(--ink);
-    transition:bottom .3s ease, font-size .2s ease, padding .2s ease; pointer-events:none;}
+    font-family:var(--sans); font-size:clamp(16px,2.25vw,23px); line-height:1.44; font-weight:450;
+    letter-spacing:-.006em; text-wrap:balance; color:var(--ink); transition:bottom .3s ease; pointer-events:none;}
   .caption b{color:var(--accent); font-weight:650}
   .caption .pd{color:var(--pd);font-weight:650}.caption .psp{color:var(--psp);font-weight:650}.caption .hc{color:var(--hc);font-weight:650}
   .app:not(.hud-off) .caption{bottom:var(--dockh,64px)}
-  /* transcript/caption size steps (persisted). default (no attr) = lg = current footprint; sm is about half. */
-  .app[data-capsize=md]{--cap-scale:.8; --tr-scale:.85}
-  .app[data-capsize=sm]{--cap-scale:.6; --tr-scale:.72}
 
   .veil{position:absolute; inset:0; z-index:30; display:none; flex-direction:column; align-items:center; justify-content:center;
     gap:15px; background:rgba(6,9,13,.74); backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px); color:var(--ink); text-align:center; padding:24px;}
@@ -160,16 +155,22 @@
   .sheet .shead{display:flex; align-items:center; justify-content:space-between; gap:8px; padding:11px 12px 11px 16px;
     cursor:grab; border-bottom:1px solid var(--line-soft); user-select:none;}
   .sheet .shead.drag{cursor:grabbing}
-  .sheet .shead .lab{font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--chrome-faint)}
+  .sheet .shead .lab{font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--chrome-faint);
+    flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
   .sheet .shead .lab b{color:var(--accent); font-weight:700; font-style:normal}
   .sheet .shead .x{width:26px;height:26px;border-radius:8px;border:none;background:var(--btn);color:var(--chrome-muted);
     cursor:pointer;display:grid;place-items:center;transition:.14s;font-size:14px}
   .sheet .shead .x:hover{background:var(--btn-hover);color:var(--chrome-ink)}
-  .sbody{padding:calc(15px*var(--tr-scale,1)) 17px calc(19px*var(--tr-scale,1)); overflow-y:auto; font-family:var(--sans); font-size:calc(15.5px*var(--tr-scale,1)); line-height:1.75; color:var(--chrome-muted); scroll-behavior:smooth; transition:font-size .2s ease}
+  /* --tr-scale is set inline on .sheet by the resize grip: font + vertical padding track the panel size */
+  .sbody{padding:calc(15px*var(--tr-scale,1)) 17px calc(19px*var(--tr-scale,1)); overflow-y:auto; font-family:var(--sans); font-size:calc(15.5px*var(--tr-scale,1)); line-height:1.75; color:var(--chrome-muted); scroll-behavior:smooth}
   .sbody w{color:var(--chrome-muted); transition:color .12s, background .12s; border-radius:4px; padding:0 1px}
   .sbody w.spoken{color:var(--chrome-ink)}
   .sbody w.active{color:#241403; background:var(--accent); font-weight:600}
   .sbody::-webkit-scrollbar{width:7px} .sbody::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
+  .sgrip{position:absolute; right:1px; bottom:1px; width:20px; height:20px; z-index:2; cursor:nwse-resize;
+    display:grid; place-items:center; color:var(--chrome-faint); opacity:0; transition:opacity .15s; touch-action:none}
+  .sheet:hover .sgrip, .sgrip.rs{opacity:.9}
+  .sgrip svg{width:11px; height:11px; display:block}
 
   /* DOM-scene helpers */
   .fig{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; gap:clamp(24px,7vw,90px); padding:2% 8% 14%}
@@ -197,9 +198,10 @@
     .nav{width:30px;height:30px} .nav svg{width:17px;height:17px}
     .tlrow .cap{display:none}                                /* hide scene title; keep the timecode */
     .tlrow{font-size:10.5px} .rail{height:9px}
-    .dchip.speed, .dchip.capsize{display:none}               /* drop speed + size pickers to fit; still on desktop */
-    .caption{font-size:calc(16px*var(--cap-scale,1)); line-height:1.38; padding:calc(20px*var(--cap-scale,1)) 16px calc(16px*var(--cap-scale,1))}
+    .dchip.speed{display:none}                               /* drop speed picker to fit; still on desktop */
+    .caption{font-size:16px; line-height:1.38; padding:20px 16px 16px}
     .sheet{width:auto; left:4vw; right:4vw; bottom:84px; max-height:44vh}
+    .sgrip{display:none}                                     /* phones keep the responsive sheet layout */
   }
 </style>
 </head>
@@ -235,6 +237,7 @@
       <div class="sheet" id="sheet">
         <div class="shead" id="shead"><span class="lab">Transcript · <b id="scur">·</b></span><button class="x" id="sclose" aria-label="Close">✕</button></div>
         <div class="sbody" id="sbody"></div>
+        <div class="sgrip" id="sgrip" aria-label="Resize transcript"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M10 1 1 10M10 6 6 10"/></svg></div>
       </div>
 
       <div class="dock" id="dock">
@@ -249,7 +252,6 @@
           <div class="rail" id="rail"><div class="fill" id="fill"></div><div class="knob" id="knob"></div></div>
         </div>
 
-        <button class="dchip capsize" id="capsize" aria-label="Caption size: Large"><span class="t">Aa L</span></button>
         <button class="dchip speed" id="speed" aria-label="Playback speed"><span class="t">1×</span></button>
         <button class="dchip" id="fs" aria-label="Fullscreen"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h6v2H6v4H4V4zm10 0h6v6h-2V6h-4V4zM4 14h2v4h4v2H4v-6zm14 0h2v6h-6v-2h4v-4z"/></svg></button>
       </div>
@@ -439,19 +441,36 @@
     head.addEventListener('touchstart',down,{passive:false});document.addEventListener('touchmove',move,{passive:false});document.addEventListener('touchend',up);
   })();
 
-  /* ---- transcript/caption size (persisted) ---- */
-  /* one dock chip cycles Large -> Medium -> Small. It scales the bottom caption bar AND the
-     transcript panel (font + vertical padding together via CSS vars), so the karaoke highlight
-     keeps working at every step. Persisted so it survives scene changes and reloads. */
-  var CAPSIZES=['lg','md','sm'], capLabels={lg:'Aa L',md:'Aa M',sm:'Aa S'}, capNames={lg:'Large',md:'Medium',sm:'Small'};
-  function applyCapSize(sz,relayout){if(CAPSIZES.indexOf(sz)<0)sz='lg';
-    app.setAttribute('data-capsize',sz);
-    var b=$('capsize');b.querySelector('.t').textContent=capLabels[sz];b.setAttribute('aria-label','Caption size: '+capNames[sz]);
-    try{localStorage.setItem('pe-capsize',sz);}catch(e){}
-    if(relayout){var capH=$('cap').offsetHeight||88;safeBottom=capH+14;   // caption shrank, so scenes get more room
-      var s=scenes[idx];stopScene();cleanupFn=s.build(PE)||null;highlight(au.currentTime||0);}}
-  $('capsize').addEventListener('click',function(){var cur=app.getAttribute('data-capsize')||'lg';
-    applyCapSize(CAPSIZES[(CAPSIZES.indexOf(cur)+1)%CAPSIZES.length],true);});
+  /* ---- transcript panel resize (drag the corner grip) ---- */
+  /* direct manipulation: drag the bottom-right grip to reshape the panel. The transcript font
+     and vertical padding scale with the panel's size (area ratio vs the default 380x440 box,
+     floored at a readable ~10.5px) via --tr-scale on the sheet, so text fits a shrunken box.
+     The karaoke highlight is class-based and unaffected. Size persists in localStorage. */
+  (function(){
+    var grip=$('sgrip'), rs=false, sx=0, sy=0, sw=0, sh=0;
+    var DEFW=380, DEFH=440, MINW=210, MINH=140, MINSCALE=0.68;
+    function setScale(w,h){var sc=Math.sqrt((w*h)/(DEFW*DEFH));sc=Math.max(MINSCALE,Math.min(1,sc));
+      sheet.style.setProperty('--tr-scale',sc.toFixed(3));}
+    function applySize(w,h){sheet.style.width=w+'px';sheet.style.height=h+'px';sheet.style.maxHeight='none';setScale(w,h);}
+    function down(e){rs=true;grip.classList.add('rs');var p=e.touches?e.touches[0]:e;sx=p.clientX;sy=p.clientY;
+      // pin the top-left corner (like the move-drag does) so the grip corner follows the pointer
+      var r=sheet.getBoundingClientRect(),pr=frame.getBoundingClientRect();sw=r.width;sh=r.height;
+      sheet.style.right='auto';sheet.style.bottom='auto';
+      sheet.style.left=(r.left-pr.left)+'px';sheet.style.top=(r.top-pr.top)+'px';
+      e.preventDefault();e.stopPropagation();}
+    function move(e){if(!rs)return;var p=e.touches?e.touches[0]:e;var pr=frame.getBoundingClientRect();
+      var w=Math.max(MINW,Math.min(pr.width-24,sw+(p.clientX-sx)));
+      var h=Math.max(MINH,Math.min(pr.height-24,sh+(p.clientY-sy)));
+      applySize(w,h);}
+    function up(){if(!rs)return;rs=false;grip.classList.remove('rs');var r=sheet.getBoundingClientRect();
+      try{localStorage.setItem('pe-sheet',JSON.stringify({w:Math.round(r.width),h:Math.round(r.height)}));}catch(e){}}
+    grip.addEventListener('mousedown',down);document.addEventListener('mousemove',move);document.addEventListener('mouseup',up);
+    grip.addEventListener('touchstart',down,{passive:false});document.addEventListener('touchmove',move,{passive:false});document.addEventListener('touchend',up);
+    // restore the persisted size (desktop only; phones keep the responsive layout). Drop the retired key.
+    try{localStorage.removeItem('pe-capsize');}catch(e){}
+    var saved=null;try{saved=JSON.parse(localStorage.getItem('pe-sheet')||'null');}catch(e){}
+    if(saved&&saved.w>=MINW&&saved.h>=MINH&&window.innerWidth>700)applySize(saved.w,saved.h);
+  })();
 
   /* ---- voice picker ---- */
   var VOICES=window.VOICES||[
@@ -527,7 +546,6 @@
     else if(e.key==='f'||e.key==='F'){e.preventDefault();toggleFs();}});
 
   /* boot */
-  var savedCap;try{savedCap=localStorage.getItem('pe-capsize');}catch(e){}applyCapSize(savedCap||'lg',false);
   sizeStage();render();setIcon();
   window.addEventListener('load',function(){sizeStage();reflow();});
 })();
