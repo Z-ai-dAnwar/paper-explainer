@@ -24,7 +24,7 @@ Everything runs on your machine. Free, offline after the first model download, n
 
 You don't have to run anything by hand. Paste this to your coding agent (Claude Code, or similar):
 
-> Clone `https://github.com/Z-ai-dAnwar/paper-explainer` and follow its README to set yourself up, then build me a narrated, animated explainer of **<paper title or arXiv link>**. Read the paper, design 8 to 12 scenes in the AI-Search teaching style in `docs/pedagogy.md`, generate the Kokoro narration, build the animated player, and open it. Do all setup yourself; don't ask me to run commands.
+> Clone `https://github.com/Z-ai-dAnwar/paper-explainer` and follow its README to set yourself up, then build me a narrated, animated explainer of `PAPER_TITLE_OR_ARXIV_LINK`. Read the paper, design 8 to 12 scenes in the AI-Search teaching style in `docs/pedagogy.md`, generate the Kokoro narration, build the animated player, and open it. Do all setup yourself; don't ask me to run commands.
 
 The agent handles install, scripting, narration, and animation. You just watch the result.
 
